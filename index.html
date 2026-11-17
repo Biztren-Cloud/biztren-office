@@ -29,7 +29,7 @@
                 <p class="text-xs text-slate-500 mt-1">Masukkan password lisensi perusahaan untuk membuka aplikasi.</p>
             </div>
             <form id="form-login" class="space-y-4">
-                <input type="password" id="input-password" placeholder="Masukkan Password (silahkan hubungi developer)" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-center font-mono">
+                <input type="password" id="input-password" placeholder="Masukkan Password (cth: biztren2026)" required class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-center font-mono">
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">Buka Aplikasi</button>
             </form>
             <p id="login-error" class="text-xs text-rose-500 font-medium hidden">Password salah! Silakan coba lagi.</p>
@@ -112,7 +112,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-6 gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">Terminal Kamera Scan QR Absen Harian</h2>
-                        <p class="text-xs text-slate-500">Batas jam masuk kantor pukul 08:00 WIB.</p>
+                        <p class="text-xs text-slate-500">Tepat waktu s.d 08:00 WIB | Terlambat s.d 12:00 WIB | > 12:00 Dianggap Tidak Hadir.</p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">Hadir Hari Ini: <span id="count-absen">0</span> Pegawai</span>
                 </div>
@@ -168,11 +168,11 @@
                 </div>
             </section>
 
-            <!-- MENU BARU: REKAPITULASI AKUMULASI BULANAN -->
+            <!-- MENU: REKAPITULASI AKUMULASI BULANAN -->
             <section id="rekap-absen" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
                 <div class="border-b border-slate-100 pb-4">
                     <h2 class="text-xl font-bold text-slate-900">Rekapitulasi Akumulasi Kehadiran Bulanan</h2>
-                    <p class="text-xs text-slate-500">Akumulasi total kehadiran, tepat waktu, dan keterlambatan per karyawan.</p>
+                    <p class="text-xs text-slate-500">Akumulasi total kehadiran tepat waktu dan terlambat per karyawan.</p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
@@ -308,7 +308,7 @@
         </footer>
     </div>
 
-    <!-- Script Logika & Rekap Akumulasi Bulanan -->
+    <!-- Script Logika & Validasi Jam Dzuhur (12:00) -->
     <script>
         const PASSWORD_LISENSI = "biztren2026";
 
@@ -348,7 +348,6 @@
             location.reload();
         }
 
-        // Data LocalStorage
         let karyawanList = JSON.parse(localStorage.getItem('biztren_office_karyawan')) || [
             { nama: "Ahmad Fauzi, S.Kom", divisi: "IT & Engineering", status: "Aktif" },
             { nama: "Siti Aminah, S.E.", divisi: "Keuangan & Akuntansi", status: "Aktif" }
@@ -368,7 +367,6 @@
             { nama: "Printer Epson L3110", lokasi: "Administrasi HR", kondisi: "Baik" }
         ];
 
-        // Kontrol Kamera
         let videoStream = null;
         function mulaiKamera() {
             const video = document.getElementById('webcam-video');
@@ -425,6 +423,7 @@
             }
         }
 
+        // Logika Validasi Jam Masuk & Batas Dzuhur (12:00)
         function catatAbsenMasuk(namaPegawai, metode) {
             const now = new Date();
             const jam = now.getHours();
@@ -432,7 +431,14 @@
             const waktuStr = jam.toString().padStart(2, '0') + ':' + menit.toString().padStart(2, '0');
             
             let statusAbsen = "Tepat Waktu";
-            if (jam > 8 || (jam === 8 && menit > 0)) {
+            
+            // Jika scan di atas jam 12:00 siang (Dzuhur), maka ditolak / dianggap Tidak Hadir
+            if (jam >= 12) {
+                alert("Gagal! Scan di atas pukul 12:00 siang (lewat Dzuhur) dianggap Tidak Hadir.");
+                return;
+            } 
+            // Jika scan antara pukul 08:01 s.d 11:59 dianggap Terlambat
+            else if (jam > 8 || (jam === 8 && menit > 0)) {
                 statusAbsen = "Terlambat";
             }
 
@@ -538,13 +544,11 @@
             localStorage.setItem('biztren_office_absen', JSON.stringify(absenList));
         }
 
-        // Render Tabel Akumulasi Rekap Bulanan
         function renderRekapBulanan() {
             const tbody = document.getElementById('tabel-rekap-bulanan');
             tbody.innerHTML = '';
 
             karyawanList.forEach(k => {
-                // Hitung total dari data absensi tersimpan
                 const absensiKaryawan = absenList.filter(a => a.nama === k.nama);
                 const totalHadir = absensiKaryawan.length;
                 const tepatWaktu = absensiKaryawan.filter(a => a.statusAbsen === "Tepat Waktu").length;

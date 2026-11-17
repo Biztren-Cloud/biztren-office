@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style> 
         body { font-family: 'Inter', sans-serif; } 
@@ -26,12 +27,12 @@
             <div class="w-14 h-14 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-200">💎</div>
             <div>
                 <h2 class="text-2xl font-bold text-slate-900">Aktivasi Lisensi Software</h2>
-                <p class="text-xs text-slate-500 mt-1">Scan QRIS di bawah untuk pembayaran, lalu hubungi developer untuk mendapatkan password akses.</p>
+                <p class="text-xs text-slate-500 mt-1">Scan QRIS di bawah untuk pembayaran RP 50000, lalu hubungi developer untuk mendapatkan password akses.</p>
             </div>
 
             <!-- GAMBAR QRIS PEMBAYARAN (Ganti qris.png dengan file gambar QRIS Anda di GitHub) -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 inline-block space-y-2">
-                <img src="qris.png" alt="QRIS Pembayaran Biztren" class="w-48 h-48 mx-auto object-contain rounded-xl border border-slate-300" onerror="this.style.display='none'; document.getElementById('qris-fallback').style.display='block';">
+                <img src="qris.jpeg" alt="QRIS Pembayaran Biztren" class="w-48 h-48 mx-auto object-contain rounded-xl border border-slate-300" onerror="this.style.display='none'; document.getElementById('qris-fallback').style.display='block';">
                 <div id="qris-fallback" class="hidden p-6 bg-slate-200 text-slate-600 text-xs rounded-xl font-medium">
                     [ tunggu kode QRIS BELUM DI UPDATE ]
                 </div>
@@ -51,7 +52,6 @@
             </div>
         </div>
     </div>
-
     <!-- AREA CETAK SLIP GAJI -->
     <div id="slip-cetak-area" class="hidden bg-white p-8 max-w-lg mx-auto text-slate-900 border border-slate-300 rounded-2xl my-10 shadow-lg">
         <div class="text-center border-b border-slate-200 pb-4 mb-4">
@@ -98,7 +98,9 @@
                     <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
                         <a href="#absensi" class="hover:text-blue-600 transition">Absensi Kamera QR</a>
                         <a href="#rekap-absen" class="hover:text-blue-600 transition">Rekap Bulanan</a>
-                        <a href="#karyawan" class="hover:text-blue-600 transition">Karyawan</a>
+                        <a href="#cuti" class="hover:text-blue-600 transition">Cuti</a>
+                        <a href="#keuangan" class="hover:text-blue-600 transition">Keuangan</a>
+                        <a href="#karyawan" class="hover:text-blue-600 transition">Karyawan & Divisi</a>
                         <a href="#payroll" class="hover:text-blue-600 transition">Payroll</a>
                         <a href="#aset" class="hover:text-blue-600 transition">Aset</a>
                     </nav>
@@ -108,55 +110,19 @@
         </header>
 
         <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-12">
+        <main class="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-16">
 
-            <!-- Header Info & Dashboard Statistik -->
-            <div class="space-y-8">
-                <div class="text-center max-w-3xl mx-auto">
-                    <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border border-blue-100 inline-block mb-4">
-                        ✨ Enterprise Corporate Edition (White-Label Ready)
-                    </span>
-                    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-                        Ringkasan HR & <span class="text-blue-600">Keuangan Perusahaan</span>
-                    </h1>
-                    <p class="mt-3 text-slate-600 text-sm md:text-base">
-                        Biztren Cloud - Modul Perkantoran Terpadu
-                    </p>
-                </div>
-
-                <!-- WIDGET STATISTIK KORPORAT -->
-                <div class="bg-slate-900 text-white rounded-3xl p-8 shadow-2xl space-y-6">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-4">
-                        <div>
-                            <h3 class="text-xl font-bold">Live Dashboard Perusahaan</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Biztren Cloud Indonesia - Real-time Sync Active</p>
-                        </div>
-                        <span class="bg-emerald-500/20 text-emerald-400 text-xs px-3 py-1.5 rounded-full font-semibold border border-emerald-500/30">● Status: Live Sync</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-medium">Total Karyawan</span>
-                            <h4 class="text-3xl font-extrabold text-white mt-2">142 Orang</h4>
-                            <span class="text-xs text-emerald-400 mt-2 inline-block">↑ Aktif & Terdaftar</span>
-                        </div>
-                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-medium">Hadir Hari Ini</span>
-                            <h4 id="stat-hadir-widget" class="text-3xl font-extrabold text-blue-400 mt-2">138 Orang</h4>
-                            <span class="text-xs text-slate-400 mt-2 inline-block">Tepat Waktu & Terlambat</span>
-                        </div>
-                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-medium">Pengajuan Cuti</span>
-                            <h4 class="text-3xl font-extrabold text-amber-400 mt-2">4 Pending</h4>
-                            <span class="text-xs text-amber-400 mt-2 inline-block">Menunggu approval HRD</span>
-                        </div>
-                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
-                            <span class="text-xs text-slate-400 font-medium">Payroll Bulan Ini</span>
-                            <h4 class="text-2xl font-extrabold text-indigo-400 mt-2">Rp 485 Juta</h4>
-                            <span class="text-xs text-slate-400 mt-2 inline-block">Termasuk tunjangan & PPh 21</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Header Info -->
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border border-blue-100 inline-block mb-4">
+                    ✨ Enterprise Corporate Edition (White-Label Ready)
+                </span>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+                    Sistem Terpadu <span class="text-blue-600">HR, Gaji, & Rekap Bulanan</span>
+                </h1>
+                <p class="mt-3 text-slate-600 text-sm md:text-base">
+                    Kelola absensi QR/GPS/wajah, pengajuan cuti, payroll, laporan kas sederhana, dan aset kantor.
+                </p>
             </div>
 
             <!-- MENU: KAMERA SCANNER ABSENSI HARIAN -->
@@ -164,7 +130,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-6 gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">Terminal Kamera Scan QR Absen Harian</h2>
-                        <p class="text-xs text-slate-500">Tepat waktu s.d 08:00 WIB | Terlambat s.d 12:00 WIB | > 12:00 Dianggap Tidak Hadir.</p>
+                        <p class="text-xs text-slate-500">Tepat waktu s.d 08:00 WIB | Terlambat s.d 12:00 WIB | GPS direkam jika izin lokasi diberikan.</p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">Hadir Hari Ini: <span id="count-absen">0</span> Pegawai</span>
                 </div>
@@ -202,6 +168,24 @@
                                 <button onclick="simulasiAbsenManual()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Absen Masuk</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-blue-100 bg-blue-50 p-5 space-y-3">
+                        <h3 class="font-bold text-blue-900">📍 Verifikasi Lokasi GPS</h3>
+                        <p class="text-xs text-blue-800">Saat absensi, browser akan meminta izin lokasi dan menyimpan koordinat GPS bersama catatan kehadiran.</p>
+                        <p id="gps-status" class="text-xs text-slate-600">Lokasi belum diambil.</p>
+                    </div>
+                    <div class="rounded-2xl border border-violet-100 bg-violet-50 p-5 space-y-3">
+                        <h3 class="font-bold text-violet-900">🙂 Face Recognition</h3>
+                        <p class="text-xs text-violet-800">Daftarkan wajah karyawan dari kamera, lalu gunakan tombol verifikasi wajah untuk absensi.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <select id="face-nama" class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-violet-200 text-xs bg-white"><option value="">Pilih karyawan</option></select>
+                            <button type="button" onclick="daftarkanWajah()" class="bg-violet-600 text-white px-3 py-2 rounded-lg text-xs font-semibold">Daftarkan Wajah</button>
+                            <button type="button" onclick="absenDenganWajah()" class="bg-indigo-600 text-white px-3 py-2 rounded-lg text-xs font-semibold">Absen dengan Wajah</button>
+                        </div>
+                        <p id="face-status" class="text-xs text-slate-600">Model pengenalan wajah akan dimuat saat diperlukan.</p>
                     </div>
                 </div>
 
@@ -321,7 +305,41 @@
                 </div>
             </section>
 
-            <!-- 3. PELAPORAN ASET & INVENTARIS KANTOR -->
+            <!-- 3. PENGELOLAAN CUTI KARYAWAN -->
+            <section id="cuti" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+                <div class="border-b border-slate-100 pb-4"><h2 class="text-xl font-bold text-slate-900">3. Pengelolaan Cuti & Izin Karyawan</h2><p class="text-xs text-slate-500">Pengajuan, pemantauan, dan persetujuan cuti/izin. Data tersimpan di browser ini.</p></div>
+                <form id="form-cuti" class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <select id="cuti-nama" required class="px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white"><option value="">Pilih Karyawan</option></select>
+                    <select id="cuti-jenis" class="px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white"><option>Cuti Tahunan</option><option>Izin</option><option>Sakit</option><option>Keperluan Keluarga</option></select>
+                    <input type="date" id="cuti-mulai" required class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                    <input type="date" id="cuti-selesai" required class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">Ajukan Cuti/Izin</button>
+                    <textarea id="cuti-alasan" placeholder="Alasan / keterangan" class="md:col-span-5 px-3 py-2 rounded-xl border border-slate-300 text-sm"></textarea>
+                </form>
+                <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50 text-slate-500"><th class="p-3">Karyawan</th><th class="p-3">Jenis</th><th class="p-3">Tanggal</th><th class="p-3">Alasan</th><th class="p-3">Status</th><th class="p-3">Aksi</th></tr></thead><tbody id="tabel-cuti"></tbody></table></div>
+            </section>
+
+            <!-- 4. LAPORAN KEUANGAN KORPORAT -->
+            <section id="keuangan" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+                <div class="border-b border-slate-100 pb-4"><h2 class="text-xl font-bold text-slate-900">4. Laporan Keuangan Perusahaan</h2><p class="text-xs text-slate-500">Pencatatan pemasukan dan pengeluaran serta ringkasan saldo berdasarkan transaksi yang dimasukkan.</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-emerald-50 rounded-2xl p-4"><p class="text-xs text-emerald-700">Total Pemasukan</p><h3 id="total-pemasukan" class="text-xl font-bold text-emerald-800">Rp 0</h3></div>
+                    <div class="bg-rose-50 rounded-2xl p-4"><p class="text-xs text-rose-700">Total Pengeluaran</p><h3 id="total-pengeluaran" class="text-xl font-bold text-rose-800">Rp 0</h3></div>
+                    <div class="bg-blue-50 rounded-2xl p-4"><p class="text-xs text-blue-700">Saldo Bersih</p><h3 id="saldo-keuangan" class="text-xl font-bold text-blue-800">Rp 0</h3></div>
+                </div>
+                <form id="form-keuangan" class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <select id="keu-jenis" class="px-3 py-2 rounded-xl border border-slate-300 text-sm"><option value="Pemasukan">Pemasukan</option><option value="Pengeluaran">Pengeluaran</option></select>
+                    <input id="keu-tanggal" type="date" required class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                    <input id="keu-kategori" placeholder="Kategori transaksi" required class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                    <input id="keu-nominal" type="number" min="1" placeholder="Nominal (Rp)" required class="px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2 text-sm font-semibold">Simpan Transaksi</button>
+                    <input id="keu-keterangan" placeholder="Keterangan / sumber transaksi" class="md:col-span-5 px-3 py-2 rounded-xl border border-slate-300 text-sm">
+                </form>
+                <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50 text-slate-500"><th class="p-3">Tanggal</th><th class="p-3">Jenis</th><th class="p-3">Kategori</th><th class="p-3">Keterangan</th><th class="p-3 text-right">Nominal</th><th class="p-3">Aksi</th></tr></thead><tbody id="tabel-keuangan"></tbody></table></div>
+                <p class="text-xs text-amber-700 bg-amber-50 p-3 rounded-xl">Catatan: modul ini merupakan pembukuan kas sederhana berdasarkan transaksi manual, belum mencakup jurnal akuntansi, neraca, arus kas otomatis, rekonsiliasi bank, atau perpajakan.</p>
+            </section>
+
+            <!-- 5. PELAPORAN ASET & INVENTARIS KANTOR -->
             <section id="aset" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-8">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-6 gap-4">
                     <div>
@@ -360,7 +378,7 @@
         </footer>
     </div>
 
-    <!-- Script Logika -->
+    <!-- Script Logika & Validasi Jam Dzuhur (12:00) -->
     <script>
         const PASSWORD_LISENSI = "madhew2026";
 
@@ -392,6 +410,11 @@
             renderRekapBulanan();
             renderPayroll();
             renderAset();
+            renderCuti();
+            renderKeuangan();
+            renderCutiSelect();
+            renderFaceSelect();
+            document.getElementById('keu-tanggal').value = tanggalHariIni();
         }
 
         function logoutApp() {
@@ -418,6 +441,11 @@
             { nama: "MacBook Pro M2 (Direksi)", lokasi: "Ruang CEO", kondisi: "Baik" },
             { nama: "Printer Epson L3110", lokasi: "Administrasi HR", kondisi: "Baik" }
         ];
+
+        let cutiList = JSON.parse(localStorage.getItem('biztren_office_cuti')) || [];
+        let keuanganList = JSON.parse(localStorage.getItem('biztren_office_keuangan')) || [];
+        let faceModelsReady = false;
+        const FACE_MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
 
         let videoStream = null;
         function mulaiKamera() {
@@ -475,35 +503,42 @@
             }
         }
 
-        function catatAbsenMasuk(namaPegawai, metode) {
+        // Absensi: tanggal, waktu, dan lokasi GPS disimpan di localStorage.
+        function tanggalHariIni() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+        }
+
+        function ambilLokasiGPS() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) return resolve({lat:null, lon:null, akurasi:null});
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve({lat:pos.coords.latitude, lon:pos.coords.longitude, akurasi:Math.round(pos.coords.accuracy)}),
+                    () => resolve({lat:null, lon:null, akurasi:null}),
+                    {enableHighAccuracy:true, timeout:10000, maximumAge:0}
+                );
+            });
+        }
+
+        async function catatAbsenMasuk(namaPegawai, metode) {
             const now = new Date();
-            const jam = now.getHours();
-            const menit = now.getMinutes();
-            const waktuStr = jam.toString().padStart(2, '0') + ':' + menit.toString().padStart(2, '0');
-            
-            let statusAbsen = "Tepat Waktu";
-            
-            if (jam >= 12) {
-                alert("Gagal! Scan di atas pukul 12:00 siang (lewat Dzuhur) dianggap Tidak Hadir.");
-                return;
-            } 
-            else if (jam > 8 || (jam === 8 && menit > 0)) {
-                statusAbsen = "Terlambat";
+            const jam = now.getHours(), menit = now.getMinutes();
+            const waktuStr = jam.toString().padStart(2,'0') + ':' + menit.toString().padStart(2,'0');
+            const tanggal = tanggalHariIni();
+            let statusAbsen = (jam > 8 || (jam === 8 && menit > 0)) ? 'Terlambat' : 'Tepat Waktu';
+            if (jam >= 12) { alert('Gagal! Scan setelah pukul 12:00 dianggap tidak hadir.'); return; }
+            if (absenList.some(a => a.nama === namaPegawai && a.tanggal === tanggal)) {
+                document.getElementById('res-scan-nama').innerText = namaPegawai + ' (Sudah Absen)';
+                document.getElementById('res-scan-waktu').innerText = 'Absensi hari ini sudah tercatat sebelumnya.'; return;
             }
-
-            const sudahAbsen = absenList.some(a => a.nama === namaPegawai);
-            if (sudahAbsen) {
-                document.getElementById('res-scan-nama').innerText = namaPegawai + " (Sudah Absen)";
-                document.getElementById('res-scan-waktu').innerText = "Absensi hari ini sudah tercatat sebelumnya.";
-                return;
-            }
-
-            absenList.unshift({ nama: namaPegawai, waktu: waktuStr + " WIB", statusAbsen, metode });
-            renderAbsen();
-            renderRekapBulanan();
-
+            document.getElementById('gps-status').innerText = 'Mengambil koordinat GPS...';
+            const gps = await ambilLokasiGPS();
+            const record = {nama:namaPegawai, tanggal, waktu:waktuStr+' WIB', statusAbsen, metode, latitude:gps.lat, longitude:gps.lon, akurasi:gps.akurasi};
+            absenList.unshift(record);
+            renderAbsen(); renderRekapBulanan();
+            document.getElementById('gps-status').innerText = gps.lat == null ? 'Lokasi tidak tersedia/izin ditolak. Absensi tetap tercatat tanpa koordinat.' : `GPS: ${gps.lat.toFixed(6)}, ${gps.lon.toFixed(6)} (akurasi ±${gps.akurasi} m)`;
             document.getElementById('res-scan-nama').innerText = namaPegawai;
-            const badgeColor = statusAbsen === "Terlambat" ? "text-rose-600" : "text-emerald-600";
+            const badgeColor = statusAbsen === 'Terlambat' ? 'text-rose-600' : 'text-emerald-600';
             document.getElementById('res-scan-waktu').innerHTML = `<span class="${badgeColor} font-bold">${statusAbsen}</span> pada pukul ${waktuStr} WIB`;
         }
 
@@ -513,6 +548,78 @@
             catatAbsenMasuk(nama, "Simulasi Pilih Cepat");
             document.getElementById('absen-nama').value = '';
         }
+
+        function renderCutiSelect() {
+            const el=document.getElementById('cuti-nama'); if(!el) return;
+            el.innerHTML='<option value="">Pilih Karyawan</option>'+karyawanList.map(k=>`<option value="${k.nama}">${k.nama}</option>`).join('');
+        }
+        function renderFaceSelect() {
+            const el=document.getElementById('face-nama'); if(!el) return;
+            el.innerHTML='<option value="">Pilih karyawan</option>'+karyawanList.map(k=>`<option value="${k.nama}">${k.nama}${k.faceDescriptor?' ✓':''}</option>`).join('');
+        }
+        async function siapkanModelWajah() {
+            if(faceModelsReady) return true;
+            const status=document.getElementById('face-status');
+            if(!window.faceapi){status.innerText='Library Face Recognition gagal dimuat. Periksa koneksi internet.';return false;}
+            status.innerText='Memuat model pengenalan wajah...';
+            try {
+                await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(FACE_MODEL_URL),faceapi.nets.faceLandmark68Net.loadFromUri(FACE_MODEL_URL),faceapi.nets.faceRecognitionNet.loadFromUri(FACE_MODEL_URL)]);
+                faceModelsReady=true; status.innerText='Model siap. Kamera aktif diperlukan.'; return true;
+            } catch(e){status.innerText='Model wajah gagal dimuat. Periksa koneksi internet.';return false;}
+        }
+        async function daftarkanWajah() {
+            const nama=document.getElementById('face-nama').value;
+            if(!nama){alert('Pilih karyawan terlebih dahulu.');return;}
+            if(!await siapkanModelWajah()) return;
+            const video=document.getElementById('webcam-video');
+            if(!videoStream){alert('Nyalakan kamera absensi terlebih dahulu.');return;}
+            document.getElementById('face-status').innerText='Arahkan wajah ke kamera, hadap lurus, lalu tunggu...';
+            try {
+                let hasil=null;
+                for(let i=0;i<12 && !hasil;i++){await new Promise(r=>setTimeout(r,350));hasil=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();}
+                if(!hasil){alert('Wajah belum terdeteksi. Pastikan pencahayaan cukup dan wajah terlihat jelas.');return;}
+                const k=karyawanList.find(x=>x.nama===nama); if(!k)return;
+                k.faceDescriptor=Array.from(hasil.descriptor);
+                localStorage.setItem('biztren_office_karyawan',JSON.stringify(karyawanList));
+                renderKaryawan();renderFaceSelect();
+                document.getElementById('face-status').innerText='Wajah '+nama+' berhasil didaftarkan pada perangkat ini.';
+            } catch(e){alert('Gagal mendaftarkan wajah: '+e.message);}
+        }
+        async function absenDenganWajah() {
+            if(!await siapkanModelWajah()) return;
+            const video=document.getElementById('webcam-video');
+            if(!videoStream){alert('Nyalakan kamera absensi terlebih dahulu.');return;}
+            document.getElementById('face-status').innerText='Mengenali wajah...';
+            try {
+                const hasil=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+                if(!hasil){document.getElementById('face-status').innerText='Wajah tidak terdeteksi.';return;}
+                const kandidat=karyawanList.filter(k=>Array.isArray(k.faceDescriptor));
+                if(!kandidat.length){alert('Belum ada wajah karyawan yang didaftarkan.');return;}
+                let terbaik=null, jarak=Infinity;
+                kandidat.forEach(k=>{const d=faceapi.euclideanDistance(hasil.descriptor,new Float32Array(k.faceDescriptor));if(d<jarak){jarak=d;terbaik=k;}});
+                if(!terbaik || jarak>0.50){document.getElementById('face-status').innerText='Wajah tidak cocok dengan data karyawan terdaftar.';return;}
+                document.getElementById('face-status').innerText=`Wajah dikenali: ${terbaik.nama} (skor jarak ${jarak.toFixed(3)}).`;
+                await catatAbsenMasuk(terbaik.nama,'Face Recognition');
+            } catch(e){document.getElementById('face-status').innerText='Terjadi kendala saat mengenali wajah.';}
+        }
+
+        function renderCuti() {
+            const tb=document.getElementById('tabel-cuti'); if(!tb)return;
+            tb.innerHTML=cutiList.map((c,i)=>`<tr class="border-b"><td class="p-3">${c.nama}</td><td class="p-3">${c.jenis}</td><td class="p-3">${c.mulai} s.d. ${c.selesai}</td><td class="p-3">${c.alasan||'-'}</td><td class="p-3 font-semibold">${c.status}</td><td class="p-3 whitespace-nowrap">${c.status==='Menunggu'?`<button onclick="ubahStatusCuti(${i},'Disetujui')" class="text-emerald-600 mr-2">Setujui</button><button onclick="ubahStatusCuti(${i},'Ditolak')" class="text-rose-600 mr-2">Tolak</button>`:''}<button onclick="hapusCuti(${i})" class="text-slate-500">Hapus</button></td></tr>`).join('');
+            localStorage.setItem('biztren_office_cuti',JSON.stringify(cutiList));
+        }
+        function ubahStatusCuti(i,status){cutiList[i].status=status;renderCuti();}
+        function hapusCuti(i){if(confirm('Hapus pengajuan ini?')){cutiList.splice(i,1);renderCuti();}}
+        function renderKeuangan(){
+            const tb=document.getElementById('tabel-keuangan');if(!tb)return;
+            const masuk=keuanganList.filter(x=>x.jenis==='Pemasukan').reduce((a,x)=>a+x.nominal,0);
+            const keluar=keuanganList.filter(x=>x.jenis==='Pengeluaran').reduce((a,x)=>a+x.nominal,0);
+            const rp=n=>'Rp '+n.toLocaleString('id-ID');
+            document.getElementById('total-pemasukan').innerText=rp(masuk);document.getElementById('total-pengeluaran').innerText=rp(keluar);document.getElementById('saldo-keuangan').innerText=rp(masuk-keluar);
+            tb.innerHTML=keuanganList.map((x,i)=>`<tr class="border-b"><td class="p-3">${x.tanggal}</td><td class="p-3">${x.jenis}</td><td class="p-3">${x.kategori}</td><td class="p-3">${x.keterangan||'-'}</td><td class="p-3 text-right font-semibold">${rp(x.nominal)}</td><td class="p-3"><button onclick="hapusTransaksi(${i})" class="text-rose-600">Hapus</button></td></tr>`).join('');
+            localStorage.setItem('biztren_office_keuangan',JSON.stringify(keuanganList));
+        }
+        function hapusTransaksi(i){if(confirm('Hapus transaksi ini?')){keuanganList.splice(i,1);renderKeuangan();}}
 
         function renderKaryawan() {
             const tbody = document.getElementById('tabel-karyawan-data');
@@ -574,8 +681,7 @@
         function renderAbsen() {
             const tbody = document.getElementById('tabel-absen-data');
             tbody.innerHTML = '';
-            document.getElementById('count-absen').innerText = absenList.length;
-            document.getElementById('stat-hadir-widget').innerText = absenList.length + " Orang";
+            document.getElementById('count-absen').innerText = absenList.filter(a => !a.tanggal || a.tanggal === tanggalHariIni()).length;
 
             absenList.forEach((item, index) => {
                 const isLate = item.statusAbsen === "Terlambat";
@@ -585,8 +691,8 @@
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-100 hover:bg-slate-50">
                         <td class="p-4 font-medium text-slate-900">${item.nama}</td>
-                        <td class="p-4 text-slate-600">${item.waktu}</td>
-                        <td class="p-4"><span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">${item.metode}</span></td>
+                        <td class="p-4 text-slate-600">${item.tanggal || '-'}<br>${item.waktu}</td>
+                        <td class="p-4"><span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">${item.metode}</span><br><span class="text-[10px] text-slate-400">${item.latitude != null ? item.latitude.toFixed(5)+', '+item.longitude.toFixed(5) : 'GPS tidak tersedia'}</span></td>
                         <td class="p-4 text-right"><span class="${badgeClass} px-3 py-1 rounded-full text-xs font-bold inline-block">${iconText}</span></td>
                     </tr>
                 `;
@@ -599,7 +705,8 @@
             tbody.innerHTML = '';
 
             karyawanList.forEach(k => {
-                const absensiKaryawan = absenList.filter(a => a.nama === k.nama);
+                const bulanIni = tanggalHariIni().slice(0,7);
+                const absensiKaryawan = absenList.filter(a => a.nama === k.nama && (!a.tanggal || a.tanggal.slice(0,7) === bulanIni));
                 const totalHadir = absensiKaryawan.length;
                 const tepatWaktu = absensiKaryawan.filter(a => a.statusAbsen === "Tepat Waktu").length;
                 const terlambat = absensiKaryawan.filter(a => a.statusAbsen === "Terlambat").length;
@@ -685,6 +792,7 @@
             karyawanList.push({ nama, divisi, status: "Aktif" });
             document.getElementById('nama-kry').value = '';
             renderKaryawan();
+            renderCutiSelect(); renderFaceSelect();
         });
 
         document.getElementById('form-payroll').addEventListener('submit', function(e) {
@@ -709,7 +817,18 @@
             renderAset();
         });
 
-        function hapusKaryawan(i) { karyawanList.splice(i, 1); renderKaryawan(); }
+        document.getElementById('form-cuti').addEventListener('submit',function(e){
+            e.preventDefault();const mulai=document.getElementById('cuti-mulai').value,selesai=document.getElementById('cuti-selesai').value;
+            if(selesai<mulai){alert('Tanggal selesai tidak boleh sebelum tanggal mulai.');return;}
+            cutiList.unshift({nama:document.getElementById('cuti-nama').value,jenis:document.getElementById('cuti-jenis').value,mulai,selesai,alasan:document.getElementById('cuti-alasan').value,status:'Menunggu'});
+            this.reset();renderCuti();
+        });
+        document.getElementById('form-keuangan').addEventListener('submit',function(e){
+            e.preventDefault();keuanganList.unshift({jenis:document.getElementById('keu-jenis').value,tanggal:document.getElementById('keu-tanggal').value,kategori:document.getElementById('keu-kategori').value,nominal:Number(document.getElementById('keu-nominal').value),keterangan:document.getElementById('keu-keterangan').value});
+            this.reset();document.getElementById('keu-tanggal').value=tanggalHariIni();renderKeuangan();
+        });
+
+        function hapusKaryawan(i) { karyawanList.splice(i, 1); renderKaryawan(); renderCutiSelect(); renderFaceSelect(); }
         function hapusPayroll(i) { payrollList.splice(i, 1); renderPayroll(); }
         function hapusAset(i) { asetList.splice(i, 1); renderAset(); }
     </script>

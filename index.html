@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biztren Office | Solusi HR, Payroll, & Aset Perusahaan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Library Pembaca QR via Kamera (jsQR) -->
+    <!-- Library QR Code & Webcam Scanner -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style> 
         body { font-family: 'Inter', sans-serif; } 
         @media print {
             body * { visibility: hidden; }
-            #slip-cetak-area, #slip-cetak-area * { visibility: visible; }
-            #slip-cetak-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+            #slip-cetak-area, #slip-cetak-area *, #id-card-cetak-area, #id-card-cetak-area * { visibility: visible; }
+            #slip-cetak-area, #id-card-cetak-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
             .no-print { display: none !important; }
         }
     </style>
@@ -36,38 +37,39 @@
         </div>
     </div>
 
-    <!-- AREA CETAK SLIP GAJI TERSEMBUNYI -->
+    <!-- AREA CETAK SLIP GAJI -->
     <div id="slip-cetak-area" class="hidden bg-white p-8 max-w-lg mx-auto text-slate-900 border border-slate-300 rounded-2xl my-10 shadow-lg">
         <div class="text-center border-b border-slate-200 pb-4 mb-4">
             <h2 class="text-xl font-extrabold text-blue-600">BIZTREN OFFICE SUITE</h2>
             <p class="text-xs text-slate-500">Slip Gaji Resmi Karyawan Korporat</p>
         </div>
         <div class="space-y-3 text-sm">
-            <div class="flex justify-between border-b border-slate-100 pb-2">
-                <span class="text-slate-500">Nama Pegawai:</span>
-                <span id="print-nama" class="font-bold">--</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-100 pb-2">
-                <span class="text-slate-500">Gaji Pokok:</span>
-                <span id="print-pokok">--</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-100 pb-2">
-                <span class="text-slate-500">Tunjangan / Lembur:</span>
-                <span id="print-tunjangan">--</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-100 pb-2">
-                <span class="text-slate-500">Estimasi Potongan PPh 21 (5%):</span>
-                <span id="print-pajak" class="text-rose-600">--</span>
-            </div>
-            <div class="flex justify-between pt-2 text-base font-extrabold">
-                <span>Gaji Bersih (Take Home Pay):</span>
-                <span id="print-netto" class="text-emerald-600">--</span>
-            </div>
+            <div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">Nama Pegawai:</span><span id="print-nama" class="font-bold">--</span></div>
+            <div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">Gaji Pokok:</span><span id="print-pokok">--</span></div>
+            <div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">Tunjangan / Lembur:</span><span id="print-tunjangan">--</span></div>
+            <div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">Estimasi Potongan PPh 21 (5%):</span><span id="print-pajak" class="text-rose-600">--</span></div>
+            <div class="flex justify-between pt-2 text-base font-extrabold"><span>Gaji Bersih (Take Home Pay):</span><span id="print-netto" class="text-emerald-600">--</span></div>
         </div>
         <div class="mt-8 text-center text-xs text-slate-400 pt-4 border-t border-slate-100">
-            <p>Dokumen ini dicetak secara otomatis dan sah dari sistem Biztren Office.</p>
-            <button onclick="tutupCetak()" class="no-print mt-6 bg-slate-800 text-white px-6 py-2 rounded-xl text-xs font-semibold hover:bg-slate-900">Tutup / Kembali ke Aplikasi</button>
+            <button onclick="tutupCetak()" class="no-print mt-4 bg-slate-800 text-white px-6 py-2 rounded-xl text-xs font-semibold">Tutup</button>
         </div>
+    </div>
+
+    <!-- AREA CETAK KARTU ID QR KARYAWAN -->
+    <div id="id-card-cetak-area" class="hidden bg-white p-6 max-w-xs mx-auto text-slate-900 border-2 border-blue-600 rounded-3xl my-10 shadow-2xl text-center space-y-4">
+        <div class="bg-blue-600 text-white py-3 rounded-2xl">
+            <h3 class="font-extrabold text-sm tracking-wider">KARTU ID PEGAWAI</h3>
+            <p class="text-[10px] text-blue-100">Biztren Office Suite</p>
+        </div>
+        <div id="card-qr-render" class="flex justify-center p-2 bg-slate-50 rounded-xl border border-slate-200 inline-block"></div>
+        <div>
+            <h4 id="card-print-nama" class="font-bold text-base text-slate-900">--</h4>
+            <p id="card-print-divisi" class="text-xs text-blue-600 font-semibold">--</p>
+        </div>
+        <div class="pt-2 border-t border-slate-100 text-[10px] text-slate-400">
+            Gunakan QR ini untuk scan absen masuk kantor.
+        </div>
+        <button onclick="tutupCetakCard()" class="no-print w-full mt-4 bg-slate-800 text-white py-2 rounded-xl text-xs font-semibold">Tutup Kartu ID</button>
     </div>
 
     <!-- KONTEN UTAMA APLIKASI -->
@@ -101,25 +103,24 @@
                     ✨ Enterprise Corporate Edition (White-Label Ready)
                 </span>
                 <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-                    Sistem Terpadu <span class="text-blue-600">HR, Gaji, & Kamera Absen QR</span>
+                    Sistem Terpadu <span class="text-blue-600">HR, Gaji, & Kartu ID QR</span>
                 </h1>
                 <p class="mt-3 text-slate-600 text-sm md:text-base">
-                    Gunakan kamera komputer/laptop untuk memindai kartu QR ID karyawan yang datang ke kantor secara real-time.
+                    Pindai kartu QR ID karyawan menggunakan kamera komputer resepsionis secara real-time.
                 </p>
             </div>
 
-            <!-- MENU UTAMA: KAMERA SCANNER ABSENSI -->
+            <!-- MENU: KAMERA SCANNER ABSENSI -->
             <section id="absensi" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-8">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-6 gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">Terminal Kamera Scan QR Absen</h2>
-                        <p class="text-xs text-slate-500">Arahkan QR ID Karyawan ke kamera utama komputer kantor.</p>
+                        <p class="text-xs text-slate-500">Arahkan kartu QR ID Karyawan ke depan lensa kamera komputer kantor.</p>
                     </div>
                     <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">Hadir Hari Ini: <span id="count-absen">0</span> Pegawai</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                    <!-- Box Kamera Webcam -->
                     <div class="bg-slate-900 p-4 rounded-2xl text-center space-y-3 shadow-inner relative overflow-hidden">
                         <h4 class="text-xs font-semibold text-slate-300">Live Kamera Resepsionis</h4>
                         <div class="relative rounded-xl overflow-hidden bg-black aspect-video flex items-center justify-center border border-slate-700">
@@ -132,7 +133,6 @@
                         <button onclick="mulaiKamera()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-xs shadow-md">🎥 Aktifkan Kamera Scanner</button>
                     </div>
 
-                    <!-- Panel Status Hasil Scan & Simulasi Alternatif -->
                     <div class="space-y-4">
                         <h4 class="text-sm font-bold text-slate-800">Status Hasil Pemindaian Terakhir</h4>
                         <div id="scan-result-box" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
@@ -141,7 +141,6 @@
                             <p id="res-scan-waktu" class="text-xs text-emerald-600 font-semibold">-</p>
                         </div>
 
-                        <!-- Alternatif Simulasi (Jika webcam tidak aktif/diuji di laptop tanpa kamera hadap depan) -->
                         <div class="pt-2 border-t border-slate-200 space-y-2">
                             <label class="block text-xs font-semibold text-slate-500">Atau Simulasi Pilih Cepat:</label>
                             <div class="flex gap-2">
@@ -154,7 +153,6 @@
                     </div>
                 </div>
 
-                <!-- Tabel Log Absensi Hari Ini -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
@@ -170,12 +168,12 @@
                 </div>
             </section>
 
-            <!-- 1. MANAJEMEN KARYAWAN & DIVISI -->
+            <!-- 1. MANAJEMEN KARYAWAN & DIVISI (DITAMBAH TOMBOL CETAK KARTU QR) -->
             <section id="karyawan" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-8">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-6 gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">1. Manajemen Karyawan & Divisi</h2>
-                        <p class="text-xs text-slate-500">Tambah data pegawai beserta departemen/divisi mereka.</p>
+                        <p class="text-xs text-slate-500">Tambah data pegawai dan cetak kartu QR ID personal mereka.</p>
                     </div>
                     <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">Total: <span id="count-karyawan">0</span> Pegawai</span>
                 </div>
@@ -199,7 +197,7 @@
                                 <th class="p-4 font-semibold">Nama Pegawai</th>
                                 <th class="p-4 font-semibold">Divisi / Departemen</th>
                                 <th class="p-4 font-semibold">Status</th>
-                                <th class="p-4 font-semibold text-right">Aksi</th>
+                                <th class="p-4 font-semibold text-right">Aksi / Cetak Kartu ID QR</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-karyawan-data"></tbody>
@@ -288,7 +286,7 @@
         </footer>
     </div>
 
-    <!-- Script Logika & Webcam QR Scanner -->
+    <!-- Script Logika & Fitur Cetak Kartu QR ID -->
     <script>
         const PASSWORD_LISENSI = "biztren2026";
 
@@ -333,7 +331,7 @@
         ];
 
         let absenList = JSON.parse(localStorage.getItem('biztren_office_absen')) || [
-            { nama: "Ahmad Fauzi, S.Kom", waktu: "08:15 WIB", metode: "Scan Kamera QR" }
+            { nama: "Ahmad Fauzi, S.Kom", waktu: "08:15 WIB", metode: "Scan Kartu QR ID" }
         ];
 
         let payrollList = JSON.parse(localStorage.getItem('biztren_office_payroll')) || [
@@ -346,7 +344,7 @@
             { nama: "Printer Epson L3110", lokasi: "Administrasi HR", kondisi: "Baik" }
         ];
 
-        // Fungsi Menyalakan Kamera untuk Scan QR Karyawan
+        // Kamera Scanner
         let videoStream = null;
         function mulaiKamera() {
             const video = document.getElementById('webcam-video');
@@ -362,7 +360,7 @@
                     requestAnimationFrame(scanTick);
                 })
                 .catch(err => {
-                    alert("Gagal mengakses kamera: " + err.message + ". Pastikan izin kamera diizinkan pada browser Anda.");
+                    alert("Gagal mengakses kamera: " + err.message);
                 });
         }
 
@@ -379,7 +377,7 @@
                 
                 const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "dontInvert" });
                 if (code) {
-                    catatAbsenMasuk(code.data, "Scan Kamera QR");
+                    catatAbsenMasuk(code.data, "Scan Kartu QR ID");
                 }
             }
             if (videoStream) {
@@ -391,7 +389,6 @@
             const now = new Date();
             const waktu = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ' WIB';
 
-            // Cek apakah sudah absen hari ini
             const sudahAbsen = absenList.some(a => a.nama === namaPegawai);
             if (sudahAbsen) {
                 document.getElementById('res-scan-nama').innerText = namaPegawai + " (Sudah Absen)";
@@ -408,10 +405,7 @@
 
         function simulasiAbsenManual() {
             const nama = document.getElementById('absen-nama').value;
-            if(!nama) {
-                alert("Silakan pilih nama karyawan terlebih dahulu!");
-                return;
-            }
+            if(!nama) { alert("Pilih karyawan dulu!"); return; }
             catatAbsenMasuk(nama, "Simulasi Pilih Cepat");
             document.getElementById('absen-nama').value = '';
         }
@@ -427,12 +421,46 @@
                         <td class="p-4 font-medium text-slate-900">${item.nama}</td>
                         <td class="p-4 text-slate-600">${item.divisi}</td>
                         <td class="p-4"><span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">${item.status}</span></td>
-                        <td class="p-4 text-right"><button onclick="hapusKaryawan(${index})" class="text-rose-500 hover:text-rose-700 text-xs font-semibold">Hapus</button></td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="cetakKartuID('${item.nama}', '${item.divisi}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🪪 Cetak ID QR</button>
+                            <button onclick="hapusKaryawan(${index})" class="text-rose-500 hover:text-rose-700 text-xs font-semibold">Hapus</button>
+                        </td>
                     </tr>
                 `;
             });
             localStorage.setItem('biztren_office_karyawan', JSON.stringify(karyawanList));
             renderAbsenSelect();
+        }
+
+        // Fungsi Cetak Kartu ID QR Karyawan
+        function cetakKartuID(nama, divisi) {
+            document.getElementById('card-print-nama').innerText = nama;
+            document.getElementById('card-print-divisi').innerText = divisi;
+
+            // Generate QR Code Personal
+            const renderBox = document.getElementById('card-qr-render');
+            renderBox.innerHTML = '';
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData(nama); // Data di dalam QR adalah Nama Karyawan
+                qr.make();
+                renderBox.innerHTML = qr.createSvgTag({cellSize: 5, margin: 2});
+            } catch(e) {
+                renderBox.innerText = nama;
+            }
+
+            const mainApp = document.getElementById('app-content');
+            const cardArea = document.getElementById('id-card-cetak-area');
+
+            mainApp.classList.add('no-print');
+            cardArea.classList.remove('hidden');
+            window.print();
+        }
+
+        function tutupCetakCard() {
+            document.getElementById('id-card-cetak-area').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('no-print');
+            location.reload();
         }
 
         function renderAbsenSelect() {
@@ -514,7 +542,6 @@
 
             const areaCetak = document.getElementById('slip-cetak-area');
             const mainApp = document.getElementById('app-content');
-            
             mainApp.classList.add('no-print');
             areaCetak.classList.remove('hidden');
             window.print();

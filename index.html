@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biztren Office | Solusi HR, Payroll, & Aset Perusahaan</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Library QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style> 
         body { font-family: 'Inter', sans-serif; } 
-        /* Styling khusus saat dokumen dicetak */
         @media print {
             body * { visibility: hidden; }
             #slip-cetak-area, #slip-cetak-area * { visibility: visible; }
@@ -35,7 +36,7 @@
         </div>
     </div>
 
-    <!-- AREA CETAK SLIP GAJI TERSEMBUNYI (Hanya muncul saat tombol cetak ditekan) -->
+    <!-- AREA CETAK SLIP GAJI TERSEMBUNYI -->
     <div id="slip-cetak-area" class="hidden bg-white p-8 max-w-lg mx-auto text-slate-900 border border-slate-300 rounded-2xl my-10 shadow-lg">
         <div class="text-center border-b border-slate-200 pb-4 mb-4">
             <h2 class="text-xl font-extrabold text-blue-600">BIZTREN OFFICE SUITE</h2>
@@ -81,9 +82,10 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+                        <a href="#absensi" class="hover:text-blue-600 transition">Absensi QR</a>
                         <a href="#karyawan" class="hover:text-blue-600 transition">Karyawan & Divisi</a>
-                        <a href="#payroll" class="hover:text-blue-600 transition">Payroll & Gaji Bersih</a>
-                        <a href="#aset" class="hover:text-blue-600 transition">Aset & Inventaris</a>
+                        <a href="#payroll" class="hover:text-blue-600 transition">Payroll</a>
+                        <a href="#aset" class="hover:text-blue-600 transition">Aset</a>
                     </nav>
                     <button onclick="logoutApp()" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-3 py-2 rounded-lg transition">Keluar</button>
                 </div>
@@ -99,12 +101,60 @@
                     ✨ Enterprise Corporate Edition (White-Label Ready)
                 </span>
                 <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-                    Sistem Terpadu <span class="text-blue-600">HR, Gaji, & Aset Kantor</span>
+                    Sistem Terpadu <span class="text-blue-600">HR, Gaji, & Absensi QR</span>
                 </h1>
                 <p class="mt-3 text-slate-600 text-sm md:text-base">
-                    Kelola manajemen divisi, rekapitulasi nominal gaji bersih (Take Home Pay), dan cetak slip gaji karyawan dengan mudah.
+                    Kelola kehadiran harian dengan Scan QR Code, manajemen divisi, rekapitulasi gaji bersih, dan pelaporan aset kantor.
                 </p>
             </div>
+
+            <!-- MENU BARU: ABSENSI SCAN QR CODE -->
+            <section id="absensi" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-6 gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Absensi Harian (Scan QR Code)</h2>
+                        <p class="text-xs text-slate-500">Scan QR Code kantor atau gunakan simulasi check-in harian pegawai.</p>
+                    </div>
+                    <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">Hadir Hari Ini: <span id="count-absen">0</span> Pegawai</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <!-- Box QR Code Kantor -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
+                        <h4 class="text-sm font-bold text-slate-700">QR Code Check-in Kantor</h4>
+                        <div id="qrcode" class="flex justify-center p-2 bg-white inline-block border border-slate-100 rounded-xl"></div>
+                        <p class="text-[11px] text-slate-400">Arahkan kamera handphone karyawan ke QR ini untuk absen.</p>
+                    </div>
+
+                    <!-- Panel Simulasi Scan Absen -->
+                    <div class="md:col-span-2 space-y-4">
+                        <h4 class="text-sm font-bold text-slate-800">Simulasi Scan Absen Karyawan</h4>
+                        <p class="text-xs text-slate-500">Pilih nama pegawai di bawah ini untuk mensimulasikan proses "Scan QR Absen" hari ini:</p>
+                        
+                        <form id="form-absen" class="flex flex-col sm:flex-row gap-3">
+                            <select id="absen-nama" required class="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">-- Pilih Nama Karyawan --</option>
+                            </select>
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl transition shadow-md text-sm">📸 Scan & Absen Masuk</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabel Log Absensi Hari Ini -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-100">
+                                <th class="p-4 font-semibold">Nama Pegawai</th>
+                                <th class="p-4 font-semibold">Waktu Check-in</th>
+                                <th class="p-4 font-semibold">Metode</th>
+                                <th class="p-4 font-semibold text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-absen-data"></tbody>
+                    </table>
+                </div>
+            </section>
 
             <!-- 1. MANAJEMEN KARYAWAN & DIVISI -->
             <section id="karyawan" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-8">
@@ -224,7 +274,7 @@
         </footer>
     </div>
 
-    <!-- Script Logika & Fitur Cetak -->
+    <!-- Script Logika & QR Code Generator -->
     <script>
         const PASSWORD_LISENSI = "biztren2026";
 
@@ -250,7 +300,10 @@
         function bukaAplikasi() {
             document.getElementById('login-modal').style.display = 'none';
             document.getElementById('app-content').classList.remove('hidden');
+            generateQRCode();
             renderKaryawan();
+            renderAbsenSelect();
+            renderAbsen();
             renderPayroll();
             renderAset();
         }
@@ -260,10 +313,28 @@
             location.reload();
         }
 
+        // Generate QR Code Kantor
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData('https://biztren-cloud.github.io/biztren-office/#absensi');
+                qr.make();
+                qrContainer.innerHTML = qr.createSvgTag({cellSize: 4, margin: 2});
+            } catch (err) {
+                qrContainer.innerText = 'QR Code Generator Ready';
+            }
+        }
+
         // Data LocalStorage
         let karyawanList = JSON.parse(localStorage.getItem('biztren_office_karyawan')) || [
             { nama: "Ahmad Fauzi, S.Kom", divisi: "IT & Engineering", status: "Aktif" },
             { nama: "Siti Aminah, S.E.", divisi: "Keuangan & Akuntansi", status: "Aktif" }
+        ];
+
+        let absenList = JSON.parse(localStorage.getItem('biztren_office_absen')) || [
+            { nama: "Ahmad Fauzi, S.Kom", waktu: "08:15 WIB", metode: "Scan QR Mobile" }
         ];
 
         let payrollList = JSON.parse(localStorage.getItem('biztren_office_payroll')) || [
@@ -292,6 +363,33 @@
                 `;
             });
             localStorage.setItem('biztren_office_karyawan', JSON.stringify(karyawanList));
+            renderAbsenSelect();
+        }
+
+        function renderAbsenSelect() {
+            const select = document.getElementById('absen-nama');
+            select.innerHTML = '<option value="">-- Pilih Nama Karyawan --</option>';
+            karyawanList.forEach(k => {
+                select.innerHTML += `<option value="${k.nama}">${k.nama} (${k.divisi})</option>`;
+            });
+        }
+
+        function renderAbsen() {
+            const tbody = document.getElementById('tabel-absen-data');
+            tbody.innerHTML = '';
+            document.getElementById('count-absen').innerText = absenList.length;
+
+            absenList.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="p-4 font-medium text-slate-900">${item.nama}</td>
+                        <td class="p-4 text-slate-600">${item.waktu}</td>
+                        <td class="p-4"><span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">${item.metode}</span></td>
+                        <td class="p-4 text-right"><span class="text-emerald-600 font-bold text-xs">✔ Hadir Tepat Waktu</span></td>
+                    </tr>
+                `;
+            });
+            localStorage.setItem('biztren_office_absen', JSON.stringify(absenList));
         }
 
         function renderPayroll() {
@@ -338,7 +436,28 @@
             localStorage.setItem('biztren_office_aset', JSON.stringify(asetList));
         }
 
-        // Fungsi Cetak Slip Gaji
+        // Form Submit Absen QR
+        document.getElementById('form-absen').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nama = document.getElementById('absen-nama').value;
+            if(!nama) return;
+
+            const now = new Date();
+            const waktu = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ' WIB';
+
+            // Cek apakah sudah absen hari ini
+            const sudahAbsen = absenList.some(a => a.nama === nama);
+            if(sudahAbsen) {
+                alert(nama + " sudah melakukan absensi hari ini!");
+                return;
+            }
+
+            absenList.unshift({ nama, waktu, metode: "Scan QR Mobile" });
+            renderAbsen();
+            document.getElementById('absen-nama').value = '';
+            alert("Absensi berhasil dicatat via Scan QR!");
+        });
+
         function cetakSlip(nama, pokok, tunjangan, pajak, netto) {
             document.getElementById('print-nama').innerText = nama;
             document.getElementById('print-pokok').innerText = 'Rp ' + pokok.toLocaleString('id-ID');
@@ -346,7 +465,6 @@
             document.getElementById('print-pajak').innerText = 'Rp ' + pajak.toLocaleString('id-ID');
             document.getElementById('print-netto').innerText = 'Rp ' + netto.toLocaleString('id-ID');
 
-            // Tampilkan area cetak lalu buka jendela print browser
             const areaCetak = document.getElementById('slip-cetak-area');
             const mainApp = document.getElementById('app-content');
             
@@ -361,7 +479,7 @@
             location.reload();
         }
 
-        // Form Submit Handlers
+        // Form Submit Lainnya
         document.getElementById('form-karyawan').addEventListener('submit', function(e) {
             e.preventDefault();
             const nama = document.getElementById('nama-kry').value;

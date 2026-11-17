@@ -80,9 +80,9 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
-                        <a href="#absensi" class="hover:text-blue-600 transition">Absensi Kamera QR</a>
+                        <a href="#absensi" class="hover:text-blue-600 transition">Absensi QR</a>
                         <a href="#rekap-absen" class="hover:text-blue-600 transition">Rekap Bulanan</a>
-                        <a href="#karyawan" class="hover:text-blue-600 transition">Karyawan & Divisi</a>
+                        <a href="#karyawan" class="hover:text-blue-600 transition">Karyawan</a>
                         <a href="#payroll" class="hover:text-blue-600 transition">Payroll</a>
                         <a href="#aset" class="hover:text-blue-600 transition">Aset</a>
                     </nav>
@@ -92,19 +92,55 @@
         </header>
 
         <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-16">
+        <main class="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-12">
 
-            <!-- Header Info -->
-            <div class="text-center max-w-3xl mx-auto">
-                <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border border-blue-100 inline-block mb-4">
-                    ✨ Enterprise Corporate Edition (White-Label Ready)
-                </span>
-                <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-                    Sistem Terpadu <span class="text-blue-600">HR, Gaji, & Rekap Bulanan</span>
-                </h1>
-                <p class="mt-3 text-slate-600 text-sm md:text-base">
-                    Kelola absensi QR, rekap akumulasi bulanan kehadiran, hitung payroll, dan aset kantor.
-                </p>
+            <!-- Header Info & Dashboard Statistik (Sesuai Iklan) -->
+            <div class="space-y-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full uppercase tracking-wider border border-blue-100 inline-block mb-4">
+                        ✨ Enterprise Corporate Edition (White-Label Ready)
+                    </span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+                        Ringkasan HR & <span class="text-blue-600">Keuangan Perusahaan</span>
+                    </h1>
+                    <p class="mt-3 text-slate-600 text-sm md:text-base">
+                        Biztren Cloud - Modul Perkantoran Terpadu
+                    </p>
+                </div>
+
+                <!-- WIDGET STATISTIK KORPORAT SEPERTI DI IKLAN -->
+                <div class="bg-slate-900 text-white rounded-3xl p-8 shadow-2xl space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Live Dashboard Perusahaan</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Biztren Cloud Indonesia - Real-time Sync Active</p>
+                        </div>
+                        <span class="bg-emerald-500/20 text-emerald-400 text-xs px-3 py-1.5 rounded-full font-semibold border border-emerald-500/30">● Status: Live Sync</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
+                            <span class="text-xs text-slate-400 font-medium">Total Karyawan</span>
+                            <h4 class="text-3xl font-extrabold text-white mt-2">142 Orang</h4>
+                            <span class="text-xs text-emerald-400 mt-2 inline-block">↑ Aktif & Terdaftar</span>
+                        </div>
+                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
+                            <span class="text-xs text-slate-400 font-medium">Hadir Hari Ini</span>
+                            <h4 id="stat-hadir-widget" class="text-3xl font-extrabold text-blue-400 mt-2">138 Orang</h4>
+                            <span class="text-xs text-slate-400 mt-2 inline-block">Tepat Waktu & Terlambat</span>
+                        </div>
+                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
+                            <span class="text-xs text-slate-400 font-medium">Pengajuan Cuti</span>
+                            <h4 class="text-3xl font-extrabold text-amber-400 mt-2">4 Pending</h4>
+                            <span class="text-xs text-amber-400 mt-2 inline-block">Menunggu approval HRD</span>
+                        </div>
+                        <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700">
+                            <span class="text-xs text-slate-400 font-medium">Payroll Bulan Ini</span>
+                            <h4 class="text-2xl font-extrabold text-indigo-400 mt-2">Rp 485 Juta</h4>
+                            <span class="text-xs text-slate-400 mt-2 inline-block">Termasuk tunjangan & PPh 21</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- MENU: KAMERA SCANNER ABSENSI HARIAN -->
@@ -308,9 +344,9 @@
         </footer>
     </div>
 
-    <!-- Script Logika & Validasi Jam Dzuhur (12:00) -->
+    <!-- Script Logika -->
     <script>
-        const PASSWORD_LISENSI = "madhew";
+        const PASSWORD_LISENSI = "madhew2026";
 
         window.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('biztren_logged_in') === 'true') {
@@ -423,7 +459,6 @@
             }
         }
 
-        // Logika Validasi Jam Masuk & Batas Dzuhur (12:00)
         function catatAbsenMasuk(namaPegawai, metode) {
             const now = new Date();
             const jam = now.getHours();
@@ -432,12 +467,10 @@
             
             let statusAbsen = "Tepat Waktu";
             
-            // Jika scan di atas jam 12:00 siang (Dzuhur), maka ditolak / dianggap Tidak Hadir
             if (jam >= 12) {
                 alert("Gagal! Scan di atas pukul 12:00 siang (lewat Dzuhur) dianggap Tidak Hadir.");
                 return;
             } 
-            // Jika scan antara pukul 08:01 s.d 11:59 dianggap Terlambat
             else if (jam > 8 || (jam === 8 && menit > 0)) {
                 statusAbsen = "Terlambat";
             }
@@ -526,6 +559,7 @@
             const tbody = document.getElementById('tabel-absen-data');
             tbody.innerHTML = '';
             document.getElementById('count-absen').innerText = absenList.length;
+            document.getElementById('stat-hadir-widget').innerText = absenList.length + " Orang";
 
             absenList.forEach((item, index) => {
                 const isLate = item.statusAbsen === "Terlambat";
